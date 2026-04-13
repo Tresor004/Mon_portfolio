@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trekcave — Trekking & Camping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   DESIGN TOKENS — LIGHT & DARK
+   ============================================================ */
+:root {
+  --orange:        #F25829;
+  --orange-h:      #FF7A52;
+  --ease:          cubic-bezier(.22, .9, .36, 1);
+  --nav-h:         76px;
+  --radius-card:   20px;
+  --radius-img:    26px;
+  --font:          'Plus Jakarta Sans', sans-serif;
+  --trans:         background .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease;
+  --carousel-gap:  18px;
+}
+
+[data-theme="light"] {
+  --bg:           #FFFFFF;
+  --bg-nav:       rgba(255,255,255,.92);
+  --bg-card:      #FFFFFF;
+  --bg-snow:      #F5F2EE;
+  --bg-badge:     rgba(255,255,255,.96);
+  --bg-mob:       rgba(255,255,255,.98);
+  --ink:          #111111;
+  --ink-2:        #333333;
+  --muted:        #7A7A7A;
+  --border:       #E8E8E8;
+  --shadow-card:  0 20px 56px rgba(0,0,0,.10);
+  --shadow-badge: 0 12px 40px rgba(0,0,0,.12);
+  --shadow-img:   0 32px 80px rgba(0,0,0,.13);
+  --toggle-bg:    #F0EDEA;
+  --toggle-knob:  #FFFFFF;
+  --toggle-icon:  #7A7A7A;
+  --footer-bg:    #111111;
+  --footer-border:#222222;
+  --footer-ink:   #EEEEEE;
+  --footer-muted: #888888;
+}
+
+[data-theme="dark"] {
+  --bg:           #0E0E10;
+  --bg-nav:       rgba(14,14,16,.92);
+  --bg-card:      #1A1A1E;
+  --bg-snow:      #1E1E22;
+  --bg-badge:     rgba(26,26,30,.96);
+  --bg-mob:       rgba(14,14,16,.98);
+  --ink:          #F0EDE8;
+  --ink-2:        #CCCCCC;
+  --muted:        #888888;
+  --border:       #2C2C30;
+  --shadow-card:  0 20px 56px rgba(0,0,0,.45);
+  --shadow-badge: 0 12px 40px rgba(0,0,0,.5);
+  --shadow-img:   0 32px 80px rgba(0,0,0,.5);
+  --toggle-bg:    #2C2C30;
+  --toggle-knob:  #F25829;
+  --toggle-icon:  #F0EDE8;
+  --footer-bg:    #08080A;
+  --footer-border:#1E1E22;
+  --footer-ink:   #EEEEEE;
+  --footer-muted: #666666;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: var(--trans);
+}
+img { display: block; max-width: 100%; }
+a   { text-decoration: none; color: inherit; }
+ul  { list-style: none; }
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes kFadeUp     { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+@keyframes kFadeRight  { from{opacity:0;transform:translateX(-24px)} to{opacity:1;transform:translateX(0)} }
+@keyframes kScaleIn    { from{opacity:0;transform:scale(.93) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes kBadgePop   { from{opacity:0;transform:scale(.85) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes kDrawPath   { from{stroke-dashoffset:420} to{stroke-dashoffset:0} }
+@keyframes kDotPop     { 0%{opacity:0;transform:scale(0)} 70%{transform:scale(1.25)} 100%{opacity:1;transform:scale(1)} }
+@keyframes kBarGrow    { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+@keyframes kPulse      { 0%,100%{box-shadow:0 0 0 0 rgba(242,88,41,.5)} 50%{box-shadow:0 0 0 7px rgba(242,88,41,0)} }
+@keyframes kStar       { 0%,100%{opacity:1;transform:scale(1) rotate(0deg)} 50%{opacity:.45;transform:scale(1.3) rotate(20deg)} }
+@keyframes kNavIn      { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes kToggleSpin { from{transform:rotate(-30deg);opacity:0} to{transform:rotate(0deg);opacity:1} }
+
+/* ── Morph carré ↔ cercle (actif sur toutes tailles d'écran) ── */
+@keyframes kMorph {
+  0%        { border-radius: 28px; }
+  28%       { border-radius: 28px; }
+  48%, 52%  { border-radius: 50%; }
+  72%       { border-radius: 50%; }
+  100%      { border-radius: 28px; }
+}
+
+@keyframes kImgSpin {
+  0%        { transform: rotate(0deg)   scale(1.08); }
+  28%       { transform: rotate(0deg)   scale(1.08); }
+  48%       { transform: rotate(12deg)  scale(1.13); }
+  52%       { transform: rotate(12deg)  scale(1.13); }
+  72%       { transform: rotate(0deg)   scale(1.08); }
+  100%      { transform: rotate(0deg)   scale(1.08); }
+}
+
+/* ── Footer animations ── */
+@keyframes kFooterIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+[data-anim]           { opacity: 0; }
+[data-anim="fade-up"] { animation: kFadeUp   .72s var(--ease) both; }
+[data-anim="fade-r"]  { animation: kFadeRight .72s var(--ease) both; }
+[data-anim="scale"]   { animation: kScaleIn  .85s var(--ease) both; }
+
+[data-delay="1"] { animation-delay: .10s; }
+[data-delay="2"] { animation-delay: .24s; }
+[data-delay="3"] { animation-delay: .38s; }
+[data-delay="4"] { animation-delay: .52s; }
+[data-delay="5"] { animation-delay: .66s; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.nav {
+  position: sticky; top: 0; z-index: 999;
+  height: var(--nav-h);
+  background: var(--bg-nav);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  animation: kNavIn .55s var(--ease) both;
+  transition: var(--trans);
+}
+.nav__inner {
+  width: 100%; max-width: 1340px;
+  margin: 0 auto; padding: 0 52px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 24px;
+}
+
+.logo {
+  font-size: 1.42rem; font-weight: 800;
+  letter-spacing: -.6px; color: var(--ink);
+  flex-shrink: 0; transition: color .3s;
+}
+.logo em { font-style: normal; color: var(--orange); }
+
+.nav__links { display: flex; gap: 28px; }
+.nav__links a {
+  font-size: .82rem; font-weight: 500;
+  color: var(--muted); letter-spacing: .01em;
+  position: relative; padding-bottom: 3px;
+  transition: color .22s;
+}
+.nav__links a::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; height: 1.5px; width: 0;
+  background: var(--orange); border-radius: 2px;
+  transition: width .28s var(--ease);
+}
+.nav__links a:hover { color: var(--ink); }
+.nav__links a:hover::after { width: 100%; }
+
+.nav__right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+/* ── Theme toggle ── */
+.toggle {
+  width: 50px; height: 26px;
+  background: var(--toggle-bg);
+  border-radius: 100px;
+  position: relative;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  transition: background .3s, border-color .3s;
+  flex-shrink: 0;
+}
+.toggle__knob {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--toggle-knob);
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .3s var(--ease), background .3s;
+}
+[data-theme="dark"] .toggle__knob { transform: translateX(24px); }
+.toggle__icon { font-size: .62rem; line-height: 1; }
+
+.btn-pill {
+  display: inline-flex; align-items: center;
+  padding: 11px 24px; border-radius: 100px;
+  font-size: .82rem; font-weight: 700;
+  letter-spacing: .02em;
+  background: var(--orange); color: #fff;
+  box-shadow: 0 4px 18px rgba(242,88,41,.36);
+  transition: background .25s, transform .2s, box-shadow .25s;
+  flex-shrink: 0;
+}
+.btn-pill:hover {
+  background: var(--orange-h);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(242,88,41,.46);
+}
+
+.nav__burger {
+  display: none; flex-direction: column;
+  gap: 5px; padding: 4px;
+}
+.nav__burger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--ink); border-radius: 2px;
+  transition: background .3s;
+}
+
+/* ============================================================
+   MOBILE OVERLAY
+   ============================================================ */
+.mob {
+  display: none; position: fixed; inset: 0;
+  background: var(--bg-mob);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 1000; flex-direction: column;
+  align-items: center; justify-content: center; gap: 28px;
+  transition: var(--trans);
+}
+.mob.is-open { display: flex; }
+.mob a {
+  font-size: 1.9rem; font-weight: 800;
+  color: var(--ink); letter-spacing: -.5px;
+  transition: color .2s;
+}
+.mob a:hover { color: var(--orange); }
+.mob__close {
+  position: absolute; top: 22px; right: 24px;
+  font-size: 1.6rem; font-weight: 700;
+  color: var(--ink); background: none; border: none;
+  transition: color .3s;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.page {
+  max-width: 1340px; margin: 0 auto;
+  padding: 0 52px;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr .82fr;
+  align-items: center;
+  gap: 52px;
+  padding-top: 52px;
+  padding-bottom: 24px;
+  min-height: calc(100svh - var(--nav-h));
+}
+
+.hero__left { position: relative; }
+
+.hero__eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--bg-snow); border-radius: 100px;
+  padding: 6px 16px 6px 7px;
+  font-size: .71rem; font-weight: 700;
+  color: var(--muted); letter-spacing: .1em;
+  text-transform: uppercase; margin-bottom: 22px;
+  transition: var(--trans);
+}
+.pulse {
+  width: 9px; height: 9px;
+  background: var(--orange); border-radius: 50%;
+  animation: kPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.hero__title {
+  font-size: clamp(2.9rem, 5.2vw, 5.4rem);
+  font-weight: 800; line-height: .96;
+  letter-spacing: -3px; color: var(--ink);
+  margin-bottom: 22px;
+  transition: color .35s;
+}
+
+.hero__desc {
+  font-size: .95rem; font-weight: 400;
+  color: var(--muted); line-height: 1.72;
+  max-width: 292px; margin-bottom: 42px;
+  transition: color .35s;
+}
+
+.btn-book {
+  display: inline-flex; align-items: center; gap: 0;
+  background: var(--orange); color: #fff;
+  border-radius: 100px;
+  padding: 5px 5px 5px 28px;
+  font-size: .79rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  box-shadow: 0 6px 26px rgba(242,88,41,.42);
+  transition: background .3s, transform .25s, box-shadow .3s;
+  width: fit-content;
+}
+.btn-book:hover {
+  background: var(--orange-h);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(242,88,41,.52);
+}
+.btn-book__icon {
+  width: 42px; height: 42px;
+  background: rgba(255,255,255,.22); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-left: 22px; flex-shrink: 0;
+  transition: background .3s, transform .3s;
+}
+.btn-book:hover .btn-book__icon {
+  background: rgba(255,255,255,.32);
+  transform: rotate(40deg);
+}
+.btn-book__icon svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.deco {
+  position: absolute; pointer-events: none;
+  animation: kStar 2.8s ease-in-out infinite;
+}
+.deco--a { top: 38%; right: -18px; }
+.deco--b { bottom: 12%; left: 2px; animation-delay: 1.2s; }
+
+/* RIGHT */
+.hero__right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero__imgwrap {
+  position: relative;
+  width: min(380px, 100%);
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+/* ── FIX 2 : animation kMorph active sur TOUS les écrans ──
+   Pas de border-radius override sur mobile.
+   GPU forcé via translateZ(0) + will-change pour fluidité sur iOS.  */
+.hero__imgclip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg-snow);
+  box-shadow: var(--shadow-img);
+  transition: box-shadow .35s;
+  transform: translateZ(0);                  /* force GPU composite layer */
+  -webkit-animation: kMorph 6s cubic-bezier(.62,.01,.38,1) 1.2s infinite;
+          animation: kMorph 6s cubic-bezier(.62,.01,.38,1) 1.2s infinite;
+  will-change: border-radius;
+}
+.hero__imgclip img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+  transform: translateZ(0);
+  -webkit-animation: kImgSpin 6s cubic-bezier(.62,.01,.38,1) 1.2s infinite;
+          animation: kImgSpin 6s cubic-bezier(.62,.01,.38,1) 1.2s infinite;
+  will-change: transform;
+}
+
+/* Route SVG */
+.route-layer {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; pointer-events: none;
+}
+.route-line {
+  stroke-dasharray: 420; stroke-dashoffset: 420;
+  animation: kDrawPath 2.6s var(--ease) 1.3s forwards;
+}
+.r-dot { animation: kDotPop .4s var(--ease) both; }
+.r-dot:nth-child(2) { animation-delay: 1.6s; }
+.r-dot:nth-child(3) { animation-delay: 2.1s; }
+.r-dot:nth-child(4) { animation-delay: 2.5s; }
+
+/* Badge KM */
+.badge-km {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--bg-badge); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 18px; padding: 13px 16px;
+  display: flex; align-items: flex-start; gap: 11px;
+  box-shadow: var(--shadow-badge); min-width: 170px;
+  border: 1px solid var(--border);
+  animation: kBadgePop .55s var(--ease) 1.6s both;
+  transition: var(--trans);
+}
+.badge-km__icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(140deg, var(--orange), #ffaa7a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; flex-shrink: 0;
+}
+.badge-km__label {
+  font-size: .75rem; font-weight: 700;
+  color: var(--ink); margin-bottom: 2px;
+  transition: color .3s;
+}
+.badge-km__sub {
+  font-size: .67rem; color: var(--muted);
+  transition: color .3s;
+}
+.badge-km__bar {
+  margin-top: 8px; height: 4px;
+  background: var(--border); border-radius: 4px; overflow: hidden;
+  transition: background .3s;
+}
+.badge-km__fill {
+  height: 100%; width: 70%; background: var(--orange);
+  border-radius: 4px; transform-origin: left; transform: scaleX(0);
+  animation: kBarGrow .9s var(--ease) 2.3s forwards;
+}
+
+/* Social proof */
+.social-proof {
+  position: absolute; bottom: 16px; right: 16px;
+  background: var(--bg-badge); backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 18px; padding: 11px 16px;
+  display: flex; align-items: center; gap: 11px;
+  box-shadow: var(--shadow-badge);
+  border: 1px solid var(--border);
+  animation: kBadgePop .55s var(--ease) 1.8s both;
+  transition: var(--trans);
+}
+.avatars { display: flex; }
+.av {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 2.5px solid var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .6rem; font-weight: 800; color: #fff;
+  margin-left: -9px; transition: border-color .35s;
+}
+.av:first-child { margin-left: 0; }
+.av--a { background: #7D50F4; }
+.av--b { background: #0FC4A8; }
+.av--c { background: #F47E00; }
+.proof__count {
+  font-size: 1rem; font-weight: 800;
+  color: var(--ink); line-height: 1;
+  transition: color .35s;
+}
+.proof__label {
+  font-size: .67rem; color: var(--muted);
+  line-height: 1.4; margin-top: 2px;
+  transition: color .35s;
+}
+
+/* ============================================================
+   CARDS / CARROUSEL
+   ============================================================ */
+.cards { padding: 16px 0 64px; }
+
+.cards__head {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 22px;
+}
+.cards__title {
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--ink); letter-spacing: -.3px;
+  transition: color .35s;
+}
+.cards__sub {
+  font-size: .77rem; color: var(--muted);
+  margin-top: 3px; transition: color .35s;
+}
+.cards__nav { display: flex; gap: 9px; }
+.cards__navbtn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card); color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .24s;
+}
+.cards__navbtn:hover {
+  background: var(--orange); border-color: var(--orange);
+  color: #fff; transform: scale(1.06);
+  box-shadow: 0 4px 16px rgba(242,88,41,.3);
+}
+.cards__navbtn svg {
+  width: 14px; height: 14px; stroke: currentColor;
+  fill: none; stroke-width: 2.2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ── FIX 3 : viewport + track pour autoplay infini ── */
+.cards__viewport {
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.cards__viewport:active { cursor: grabbing; }
+
+.cards__track {
+  display: flex;
+  gap: var(--carousel-gap);
+  transition: transform .62s cubic-bezier(.22,.9,.36,1);
+  will-change: transform;
+}
+
+/* Indicateurs de pagination */
+.cards__dots {
+  display: flex; justify-content: center; gap: 8px;
+  margin-top: 22px;
+}
+.cards__dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border);
+  transition: background .3s, transform .3s, width .3s;
+  flex-shrink: 0;
+}
+.cards__dot.is-active {
+  background: var(--orange);
+  width: 22px; border-radius: 4px;
+}
+
+/* Card */
+.tcard {
+  flex: 0 0 calc(33.333% - 12px);
+  border-radius: var(--radius-card);
+  overflow: hidden; border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  transition: transform .32s var(--ease), box-shadow .32s var(--ease), background .35s, border-color .35s;
+  opacity: 0;
+  animation: kFadeUp .6s var(--ease) both;
+}
+.tcard:nth-child(1) { animation-delay: .72s; }
+.tcard:nth-child(2) { animation-delay: .86s; }
+.tcard:nth-child(3) { animation-delay: 1.0s; }
+.tcard:nth-child(4) { animation-delay: 1.14s; }
+.tcard:hover {
+  transform: translateY(-7px);
+  box-shadow: var(--shadow-card);
+}
+
+.tcard__img { position: relative; overflow: hidden; height: 156px; }
+.tcard__img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .55s ease;
+  animation: none; will-change: auto;   /* Pas de kImgSpin ici */
+}
+.tcard:hover .tcard__img img { transform: scale(1.08); }
+
+.tcard__chip {
+  position: absolute; top: 10px; left: 10px;
+  background: rgba(255,255,255,.92);
+  border-radius: 7px; padding: 3px 10px;
+  font-size: .67rem; font-weight: 700;
+  color: var(--orange); letter-spacing: .04em;
+}
+[data-theme="dark"] .tcard__chip { background: rgba(20,20,24,.88); color: var(--orange-h); }
+
+.tcard__body { padding: 14px 16px 16px; }
+.tcard__name {
+  font-size: .92rem; font-weight: 700;
+  color: var(--ink); letter-spacing: -.2px; margin-bottom: 4px;
+  transition: color .35s;
+}
+.tcard__meta {
+  display: flex; align-items: center; gap: 5px;
+  font-size: .72rem; color: var(--muted);
+  margin-bottom: 14px; transition: color .35s;
+}
+.tcard__meta svg {
+  width: 12px; height: 12px;
+  stroke: var(--muted); fill: none; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.tcard__foot { display: flex; align-items: center; justify-content: space-between; }
+.stars { display: flex; gap: 2px; }
+.stars svg { width: 12px; height: 12px; }
+.rev-count { font-size: .68rem; color: var(--muted); margin-left: 5px; }
+.tcard__price {
+  font-size: 1rem; font-weight: 800;
+  color: var(--orange); letter-spacing: -.3px;
+}
+.tcard__price span {
+  font-size: .68rem; font-weight: 400;
+  color: var(--muted); letter-spacing: 0;
+}
+
+/* ============================================================
+   FIX 4 — FOOTER
+   ============================================================ */
+.footer {
+  background: var(--footer-bg);
+  border-top: 1px solid var(--footer-border);
+  margin-top: 20px;
+  transition: background .35s, border-color .35s;
+}
+
+.footer__top {
+  padding-top: 72px;
+  padding-bottom: 64px;
+  display: grid;
+  grid-template-columns: 1.2fr 2fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+/* Colonne marque */
+.footer__brand {}
+.footer__brand .logo {
+  font-size: 1.5rem;
+  color: var(--footer-ink);
+  display: inline-block;
+  margin-bottom: 16px;
+}
+.footer__tagline {
+  font-size: .83rem;
+  color: var(--footer-muted);
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 200px;
+}
+
+.footer__social {
+  display: flex; gap: 10px;
+}
+.footer__social-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--footer-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--footer-muted);
+  transition: border-color .25s, color .25s, background .25s, transform .22s;
+}
+.footer__social-btn:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: rgba(242,88,41,.08);
+  transform: translateY(-3px);
+}
+.footer__social-btn svg {
+  width: 15px; height: 15px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* Colonnes de liens */
+.footer__cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.footer__col-title {
+  font-size: .7rem; font-weight: 800;
+  color: var(--footer-ink);
+  letter-spacing: .12em; text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.footer__col ul { display: flex; flex-direction: column; gap: 10px; }
+.footer__col ul a {
+  font-size: .8rem;
+  color: var(--footer-muted);
+  transition: color .22s;
+  position: relative;
+  display: inline-block;
+}
+.footer__col ul a:hover { color: var(--orange); }
+
+/* Newsletter */
+.footer__newsletter {}
+.footer__newsletter .footer__col-title { margin-bottom: 10px; }
+.footer__newsletter p {
+  font-size: .78rem;
+  color: var(--footer-muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.footer__form {
+  display: flex; border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--footer-border);
+  transition: border-color .25s;
+}
+.footer__form:focus-within { border-color: var(--orange); }
+.footer__form input {
+  flex: 1; padding: 12px 16px;
+  background: transparent;
+  color: var(--footer-ink);
+  font-family: var(--font);
+  font-size: .78rem;
+  border: none; outline: none;
+}
+.footer__form input::placeholder { color: var(--footer-muted); }
+.footer__form button {
+  padding: 0 18px;
+  background: var(--orange); color: #fff;
+  font-size: .9rem; font-weight: 800;
+  border: none; cursor: pointer;
+  transition: background .25s;
+  flex-shrink: 0;
+}
+.footer__form button:hover { background: var(--orange-h); }
+
+/* Badge confiance */
+.footer__trust {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 14px;
+}
+.footer__trust-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--footer-border);
+  border-radius: 8px;
+  font-size: .64rem; font-weight: 600;
+  color: var(--footer-muted);
+  letter-spacing: .03em;
+}
+.footer__trust-badge svg {
+  width: 11px; height: 11px;
+  stroke: var(--orange); fill: none;
+  stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+/* Séparateur */
+.footer__divider {
+  height: 1px;
+  background: var(--footer-border);
+  margin: 0 52px;
+  transition: background .35s;
+}
+
+/* Barre basse */
+.footer__bottom {
+  padding: 20px 0;
+}
+.footer__bottom > .page {
+  display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer__copy {
+  font-size: .72rem;
+  color: var(--footer-muted);
+}
+.footer__copy strong { color: var(--footer-ink); font-weight: 700; }
+
+.footer__legal {
+  display: flex; gap: 22px;
+}
+.footer__legal a {
+  font-size: .72rem;
+  color: var(--footer-muted);
+  transition: color .22s;
+}
+.footer__legal a:hover { color: var(--orange); }
+
+.footer__made {
+  font-size: .68rem;
+  color: var(--footer-muted);
+  display: flex; align-items: center; gap: 5px;
+}
+.footer__made span { color: var(--orange); font-size: .8rem; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .nav__inner, .page { padding-left: 36px; padding-right: 36px; }
+  .hero { gap: 36px; }
+  .footer__top { grid-template-columns: 1fr 1.6fr; gap: 40px; }
+  .footer__newsletter { grid-column: 1 / -1; }
+  .footer__divider { margin: 0 36px; }
+}
+
+@media (max-width: 860px) {
+  .tcard { flex: 0 0 calc(50% - 9px); }
+  .footer__top { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer__brand { grid-column: 1 / -1; }
+  .footer__cols { grid-column: 1; }
+  .footer__newsletter { grid-column: 2; }
+}
+
+/* ── FIX 1 : Mobile complet ── */
+@media (max-width: 768px) {
+  :root { --nav-h: 64px; }
+
+  .nav__inner { padding: 0 18px; }
+  .nav__links, .btn-pill { display: none; }
+  .nav__burger { display: flex; }
+
+  .page { padding: 0 18px; }
+
+  /* Hero */
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 28px;
+    padding-bottom: 32px;
+    gap: 32px;
+    min-height: unset;
+  }
+  .hero__title {
+    font-size: clamp(2.3rem, 9vw, 3.4rem);
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+  .hero__desc { max-width: 100%; margin-bottom: 32px; }
+  .hero__eyebrow { margin-bottom: 16px; }
+
+  .btn-book { font-size: .74rem; padding: 4px 4px 4px 20px; }
+  .btn-book__icon { width: 36px; height: 36px; margin-left: 16px; }
+
+  /* Image hero : animation kMorph préservée, taille adaptée */
+  .hero__right { justify-content: center; }
+  .hero__imgwrap {
+    width: min(320px, 100%);
+    /* PAS de border-radius override : kMorph tourne librement sur mobile */
+  }
+
+  /* Badges : réduits et repositionnés pour petits écrans */
+  .badge-km {
+    top: 10px; right: 10px;
+    padding: 9px 12px; min-width: unset;
+    border-radius: 13px; gap: 8px;
+  }
+  .badge-km__icon { width: 30px; height: 30px; border-radius: 8px; font-size: .85rem; }
+  .badge-km__label { font-size: .68rem; }
+  .badge-km__sub { font-size: .6rem; }
+
+  .social-proof {
+    bottom: 10px; right: 10px;
+    padding: 8px 12px; gap: 8px; border-radius: 13px;
+  }
+  .av { width: 24px; height: 24px; font-size: .54rem; margin-left: -7px; }
+  .proof__count { font-size: .88rem; }
+  .proof__label { font-size: .6rem; }
+
+  /* Décos masquées sur mobile pour éviter le débordement */
+  .deco { display: none; }
+
+  /* Carrousel */
+  .cards { padding: 10px 0 40px; }
+  .tcard { flex: 0 0 76vw; }
+
+  /* Footer */
+  .footer__top {
+    grid-template-columns: 1fr;
+    padding-top: 48px; padding-bottom: 40px;
+    gap: 36px;
+  }
+  .footer__brand { grid-column: auto; }
+  .footer__tagline { max-width: 100%; }
+  .footer__cols { grid-column: auto; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .footer__newsletter { grid-column: auto; }
+  .footer__divider { margin: 0 18px; }
+  .footer__bottom > .page { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .footer__made { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hero__title { font-size: clamp(2rem, 8.5vw, 2.5rem); letter-spacing: -1.5px; }
+  .hero__imgwrap { width: 100%; }
+  .tcard { flex: 0 0 82vw; }
+
+  .footer__cols { grid-template-columns: 1fr 1fr; }
+  .footer__form { flex-direction: column; border-radius: 10px; }
+  .footer__form input { padding: 12px 14px; }
+  .footer__form button { padding: 12px; border-radius: 0; font-size: .82rem; }
+}
+
+@media (max-width: 360px) {
+  .page { padding: 0 14px; }
+  .hero__title { font-size: 1.9rem; }
+  .badge-km { display: none; } /* masqué sur très petits écrans */
+}
+
+</style>
+</head>
+<body>
+
+<!-- ── MOBILE OVERLAY ── -->
+<nav class="mob" id="mob">
+  <button class="mob__close" onclick="closeMob()">✕</button>
+  <a href="#">Réservations</a>
+  <a href="#">Carte des Treks</a>
+  <a href="#">Forfaits</a>
+  <a href="#">Instructeurs</a>
+  <a href="#">Contact</a>
+  <a href="#" style="color:var(--orange)">Je veux partir →</a>
+</nav>
+
+<!-- ══════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════ -->
+<header class="nav">
+  <div class="nav__inner">
+
+    <a href="#" class="logo">Trek<em>cave</em></a>
+
+    <ul class="nav__links">
+      <li><a href="#">Réservations</a></li>
+      <li><a href="#">Carte des Treks</a></li>
+      <li><a href="#">Forfaits</a></li>
+      <li><a href="#">Instructeurs</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+
+    <div class="nav__right">
+      <button class="toggle" id="themeToggle" aria-label="Changer le thème" onclick="toggleTheme()">
+        <div class="toggle__knob">
+          <span class="toggle__icon" id="toggleIcon">☀️</span>
+        </div>
+      </button>
+      <a href="#" class="btn-pill">Je veux partir</a>
+      <button class="nav__burger" onclick="openMob()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<main class="page">
+<section class="hero">
+
+  <!-- GAUCHE -->
+  <div class="hero__left">
+
+    <div class="hero__eyebrow" data-anim="fade-up" data-delay="1">
+      <span class="pulse"></span>
+      L'aventure vous attend
+    </div>
+
+    <h1 class="hero__title" data-anim="fade-r" data-delay="2">
+      Trekking&nbsp;&amp;<br>Camping
+    </h1>
+
+    <p class="hero__desc" data-anim="fade-up" data-delay="3">
+      Votre guide idéal vers les sommets enneigés — explorez les sentiers de montagne les plus époustouflants au monde.
+    </p>
+
+    <a href="#" class="btn-book" data-anim="fade-up" data-delay="4">
+      Réserver maintenant
+      <span class="btn-book__icon">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+    <div class="deco deco--a">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 1 11.6 8.4 19 10 11.6 11.6 10 19 8.4 11.6 1 10 8.4 8.4Z" fill="var(--ink)"/>
+      </svg>
+    </div>
+    <div class="deco deco--b">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M7 1 8 6 13 7 8 8 7 13 6 8 1 7 6 6Z" fill="var(--orange)"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <!-- DROITE -->
+  <div class="hero__right" data-anim="scale" data-delay="2">
+    <div class="hero__imgwrap">
+
+      <div class="hero__imgclip">
+        <img
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1000&q=85"
+          alt="Panorama de montagne"
+          loading="eager"
+        />
+        <svg class="route-layer" viewBox="0 0 600 520" preserveAspectRatio="xMidYMid slice">
+          <path class="route-line"
+            d="M 120 460 C 190 380 265 295 350 230 C 415 175 460 145 530 110"
+            fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2" stroke-dasharray="9 7"
+          />
+          <circle class="r-dot" cx="120" cy="460" r="7" fill="#F25829" stroke="white" stroke-width="2.5"/>
+          <circle class="r-dot" cx="270" cy="285" r="5" fill="white" stroke="#F25829" stroke-width="2"/>
+          <circle class="r-dot" cx="382" cy="218" r="5" fill="white" stroke="#F25829" stroke-width="2"/>
+          <circle class="r-dot" cx="530" cy="110" r="7" fill="#F25829" stroke="white" stroke-width="2.5"/>
+        </svg>
+      </div>
+
+      <div class="badge-km">
+        <div class="badge-km__icon">🏔</div>
+        <div>
+          <div class="badge-km__label">Distance de Trek</div>
+          <div class="badge-km__sub">70 km · Total du parcours</div>
+          <div class="badge-km__bar"><div class="badge-km__fill"></div></div>
+        </div>
+      </div>
+
+      <div class="social-proof">
+        <div class="avatars">
+          <div class="av av--a">A</div>
+          <div class="av av--b">B</div>
+          <div class="av av--c">C</div>
+        </div>
+        <div>
+          <div class="proof__count">100k+</div>
+          <div class="proof__label">Personnes ont<br>déjà exploré</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     CARTES
+══════════════════════════════════════ -->
+<section class="cards">
+
+  <div class="cards__head">
+    <div>
+      <div class="cards__title">Treks Populaires</div>
+      <div class="cards__sub">Des aventures sélectionnées pour tous les niveaux</div>
+    </div>
+    <div class="cards__nav">
+      <button class="cards__navbtn" id="btnPrev" aria-label="Précédent">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="cards__navbtn" id="btnNext" aria-label="Suivant">
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="cards__viewport" id="cViewport">
+    <div class="cards__track" id="cTrack">
+
+      <!-- Carte 1 -->
+      <article class="tcard">
+        <div class="tcard__img">
+          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="Trek Manali"/>
+          <div class="tcard__chip">Populaire</div>
+        </div>
+        <div class="tcard__body">
+          <div class="tcard__name">Trek de Manali</div>
+          <div class="tcard__meta">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            7 Jours / 6 Nuits
+          </div>
+          <div class="tcard__foot">
+            <div style="display:flex;align-items:center">
+              <div class="stars">
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="var(--border)"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+              </div>
+              <span class="rev-count">10 Avis</span>
+            </div>
+            <div class="tcard__price">299€ <span>/pers.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Carte 2 -->
+      <article class="tcard">
+        <div class="tcard__img">
+          <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&q=80" alt="Sikkim Inde"/>
+          <div class="tcard__chip">Tendance</div>
+        </div>
+        <div class="tcard__body">
+          <div class="tcard__name">Sikkim, Inde</div>
+          <div class="tcard__meta">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            7 Jours / 6 Nuits
+          </div>
+          <div class="tcard__foot">
+            <div style="display:flex;align-items:center">
+              <div class="stars">
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+              </div>
+              <span class="rev-count">10 Avis</span>
+            </div>
+            <div class="tcard__price">449€ <span>/pers.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Carte 3 -->
+      <article class="tcard">
+        <div class="tcard__img">
+          <img src="https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?w=600&q=80" alt="Trek Alpin"/>
+          <div class="tcard__chip">Nouveau</div>
+        </div>
+        <div class="tcard__body">
+          <div class="tcard__name">Trek Alpin</div>
+          <div class="tcard__meta">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            7 Jours / 6 Nuits
+          </div>
+          <div class="tcard__foot">
+            <div style="display:flex;align-items:center">
+              <div class="stars">
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="var(--border)"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+              </div>
+              <span class="rev-count">8 Avis</span>
+            </div>
+            <div class="tcard__price">379€ <span>/pers.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Carte 4 -->
+      <article class="tcard">
+        <div class="tcard__img">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="Trek Himalayen"/>
+          <div class="tcard__chip">Meilleure vente</div>
+        </div>
+        <div class="tcard__body">
+          <div class="tcard__name">Trek Himalayen</div>
+          <div class="tcard__meta">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            10 Jours / 9 Nuits
+          </div>
+          <div class="tcard__foot">
+            <div style="display:flex;align-items:center">
+              <div class="stars">
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+                <svg viewBox="0 0 20 20" fill="#F25829"><path d="M10 1l2.4 5 5.6.8-4 4 1 5.5L10 14l-5 2.3 1-5.5L2 7l5.6-.8Z"/></svg>
+              </div>
+              <span class="rev-count">24 Avis</span>
+            </div>
+            <div class="tcard__price">699€ <span>/pers.</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- FIX 3 : Indicateurs de pagination autoplay -->
+  <div class="cards__dots" id="cDots"></div>
+
+</section>
+</main>
+
+
+<!-- ══════════════════════════════════════
+     FIX 4 — FOOTER
+══════════════════════════════════════ -->
+<footer class="footer">
+
+  <div class="footer__top page">
+
+    <!-- Colonne marque -->
+    <div class="footer__brand">
+      <a href="#" class="logo">Trek<em>cave</em></a>
+      <p class="footer__tagline">Guidez-vous vers les sommets.<br>Vivez l'aventure de votre vie.</p>
+
+      <div class="footer__social">
+        <!-- Instagram -->
+        <a href="#" class="footer__social-btn" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <!-- Facebook -->
+        <a href="#" class="footer__social-btn" aria-label="Facebook">
+          <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <!-- YouTube -->
+        <a href="#" class="footer__social-btn" aria-label="YouTube">
+          <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.4a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--footer-bg)" stroke="none"/></svg>
+        </a>
+        <!-- TikTok -->
+        <a href="#" class="footer__social-btn" aria-label="TikTok">
+          <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Colonnes de navigation -->
+    <div class="footer__cols">
+      <div class="footer__col">
+        <div class="footer__col-title">Expériences</div>
+        <ul>
+          <li><a href="#">Treks Himalayens</a></li>
+          <li><a href="#">Camping Alpin</a></li>
+          <li><a href="#">Randonnées Guidées</a></li>
+          <li><a href="#">Expéditions Extrêmes</a></li>
+          <li><a href="#">Séjours en Nature</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__col-title">Destinations</div>
+        <ul>
+          <li><a href="#">Himalaya · Népal</a></li>
+          <li><a href="#">Alpes · France</a></li>
+          <li><a href="#">Andes · Pérou</a></li>
+          <li><a href="#">Sikkim · Inde</a></li>
+          <li><a href="#">Carte des Treks</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <div class="footer__col-title">Infos</div>
+        <ul>
+          <li><a href="#">À propos</a></li>
+          <li><a href="#">Nos Guides</a></li>
+          <li><a href="#">Témoignages</a></li>
+          <li><a href="#">Blog Trek</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="footer__newsletter">
+      <div class="footer__col-title">Newsletter d'Aventure</div>
+      <p>Destinations exclusives, bons plans et conseils d'exploration — directement dans votre boîte mail.</p>
+      <div class="footer__form">
+        <input type="email" placeholder="votre@email.com" aria-label="Adresse email"/>
+        <button type="button" aria-label="S'abonner">→</button>
+      </div>
+      <div class="footer__trust">
+        <div class="footer__trust-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Données protégées
+        </div>
+        <div class="footer__trust-badge">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Désabonnement facile
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer__divider"></div>
+
+  <div class="footer__bottom">
+    <div class="page">
+      <p class="footer__copy">© 2025 <strong>Trekcave</strong>. Tous droits réservés.</p>
+      <div class="footer__legal">
+        <a href="#">Confidentialité</a>
+        <a href="#">Conditions d'utilisation</a>
+        <a href="#">Remboursement</a>
+      </div>
+      <div class="footer__made">
+        Conçu avec <span>♥</span> pour les explorateurs
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+/* ── Thème ── */
+const html  = document.documentElement;
+const icon  = document.getElementById('toggleIcon');
+
+const saved = localStorage.getItem('trekcave-theme');
+if (saved) {
+  html.setAttribute('data-theme', saved);
+  icon.textContent = saved === 'dark' ? '🌙' : '☀️';
+} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  html.setAttribute('data-theme', 'dark');
+  icon.textContent = '🌙';
+}
+
+function toggleTheme() {
+  const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  icon.textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('trekcave-theme', next);
+}
+
+/* ── Menu mobile ── */
+function openMob()  { document.getElementById('mob').classList.add('is-open'); }
+function closeMob() { document.getElementById('mob').classList.remove('is-open'); }
+
+/* ══════════════════════════════════════════
+   FIX 3 — CARROUSEL AUTOPLAY INFINI
+   Technique : clonage des cartes pour un
+   défilement sans saut visible.
+══════════════════════════════════════════ */
+(function initCarousel() {
+  const track     = document.getElementById('cTrack');
+  const viewport  = document.getElementById('cViewport');
+  const dotsWrap  = document.getElementById('cDots');
+  const GAP       = 18; // doit correspondre à --carousel-gap
+
+  /* ── 1. Récupérer les cartes originales ── */
+  const origCards = [...track.querySelectorAll('.tcard')];
+  const origCount = origCards.length;
+
+  /* ── 2. Cloner pour scroll infini (droite) ── */
+  origCards.forEach(card => {
+    const clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    track.appendChild(clone);
+  });
+
+  /* ── 3. Dots de pagination (basés sur les cartes originales) ── */
+  origCards.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'cards__dot';
+    dot.setAttribute('aria-label', `Carte ${i + 1}`);
+    dot.addEventListener('click', () => { goTo(i); resetAutoplay(); });
+    dotsWrap.appendChild(dot);
+  });
+
+  const dots = [...dotsWrap.querySelectorAll('.cards__dot')];
+
+  /* ── 4. State ── */
+  let pos          = 0;
+  let autoTimer    = null;
+  let isAnimating  = false;
+
+  /* ── 5. Helpers ── */
+  function visibleCount() {
+    const w = window.innerWidth;
+    if (w <= 520)  return 1;
+    if (w <= 860)  return 2;
+    return 3;
+  }
+
+  function getCardWidth() {
+    const allCards = track.querySelectorAll('.tcard');
+    if (!allCards.length) return 0;
+    return allCards[0].getBoundingClientRect().width;
+  }
+
+  function updateDots() {
+    const activePos = pos % origCount;
+    dots.forEach((d, i) => d.classList.toggle('is-active', i === activePos));
+  }
+
+  function slideTo(p, animate = true) {
+    if (!animate) {
+      track.style.transition = 'none';
+      void track.offsetWidth; // force reflow
+    } else {
+      track.style.transition = 'transform .62s cubic-bezier(.22,.9,.36,1)';
+    }
+    const step = getCardWidth() + GAP;
+    track.style.transform = `translateX(-${p * step}px)`;
+    updateDots();
+  }
+
+  /* ── 6. Transition end : snap silencieux si on est dans les clones ── */
+  track.addEventListener('transitionend', () => {
+    isAnimating = false;
+    if (pos >= origCount) {
+      pos -= origCount;
+      slideTo(pos, false);
+    }
+  });
+
+  /* ── 7. Navigation ── */
+  function goTo(p) {
+    if (isAnimating) return;
+    isAnimating = true;
+    pos = p;
+    slideTo(pos);
+  }
+
+  function next() {
+    if (isAnimating) return;
+    isAnimating = true;
+    pos++;
+    slideTo(pos);
+  }
+
+  function prev() {
+    if (isAnimating) return;
+    // Aller vers la gauche depuis la position 0 :
+    // on saute silencieusement à pos = origCount, puis on recule
+    if (pos <= 0) {
+      pos = origCount;
+      slideTo(pos, false);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        isAnimating = true;
+        pos--;
+        slideTo(pos);
+      }));
+      return;
+    }
+    isAnimating = true;
+    pos--;
+    slideTo(pos);
+  }
+
+  /* ── 8. Autoplay ── */
+  function startAutoplay() {
+    stopAutoplay();
+    autoTimer = setInterval(next, 3800);
+  }
+
+  function stopAutoplay() { clearInterval(autoTimer); autoTimer = null; }
+
+  function resetAutoplay() { stopAutoplay(); startAutoplay(); }
+
+  startAutoplay();
+
+  /* Pause au survol (desktop) */
+  viewport.addEventListener('mouseenter', stopAutoplay);
+  viewport.addEventListener('mouseleave', startAutoplay);
+
+  /* ── 9. Touch / swipe mobile ── */
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  viewport.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    stopAutoplay();
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', e => {
+    const dx = touchStartX - e.changedTouches[0].clientX;
+    const dy = Math.abs(touchStartY - e.changedTouches[0].clientY);
+    if (Math.abs(dx) > 40 && dy < 60) {
+      if (dx > 0) next(); else prev();
+    }
+    startAutoplay();
+  }, { passive: true });
+
+  /* ── 10. Boutons manuels ── */
+  document.getElementById('btnNext').addEventListener('click', () => { next(); resetAutoplay(); });
+  document.getElementById('btnPrev').addEventListener('click', () => { prev(); resetAutoplay(); });
+
+  /* ── 11. Recalcul au redimensionnement ── */
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      stopAutoplay();
+      pos = 0;
+      slideTo(0, false);
+      startAutoplay();
+    }, 200);
+  });
+
+  /* Initialisation */
+  updateDots();
+
+})();
+</script>
+
+</body>
+</html>
