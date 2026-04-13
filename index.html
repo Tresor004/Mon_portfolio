@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Développeur Web</title>
+  <meta name="description" content="Portfolio moderne de développeur web avec design clair, animation de texte et mode clair/sombre." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', saved || preferred);
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --bg-soft: rgba(255, 255, 255, 0.78);
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: rgba(15, 23, 42, 0.08);
+      --primary: #4f46e5;
+      --primary-2: #06b6d4;
+      --accent: #ec4899;
+      --shadow: 0 20px 60px rgba(79, 70, 229, 0.12);
+      --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --success: #10b981;
+      --radius: 22px;
+      --radius-sm: 16px;
+      --container: 1180px;
+    }
+
+    html[data-theme="dark"] {
+      --bg: #09111f;
+      --bg-soft: rgba(15, 23, 42, 0.76);
+      --surface: #0f172a;
+      --surface-2: #111c33;
+      --text: #e5eefb;
+      --muted: #94a3b8;
+      --line: rgba(148, 163, 184, 0.14);
+      --primary: #818cf8;
+      --primary-2: #22d3ee;
+      --accent: #f472b6;
+      --shadow: 0 20px 60px rgba(2, 6, 23, 0.5);
+      --shadow-soft: 0 10px 30px rgba(2, 6, 23, 0.32);
+      --success: #34d399;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(79, 70, 229, 0.14), transparent 30%),
+        radial-gradient(circle at 90% 15%, rgba(6, 182, 212, 0.12), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(236, 72, 153, 0.08), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background-color .35s ease, color .35s ease;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+      pointer-events: none;
+      opacity: .25;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    button {
+      font: inherit;
+      border: none;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(100% - 2rem, var(--container));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: color-mix(in srgb, var(--bg-soft) 85%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: .85rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      font-size: 1.1rem;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+
+    .nav-links a {
+      padding: .75rem 1rem;
+      color: var(--muted);
+      border-radius: 999px;
+      transition: .25s ease;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--text);
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .theme-toggle,
+    .menu-toggle {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--surface) 82%, transparent);
+      box-shadow: inset 0 0 0 1px var(--line), var(--shadow-soft);
+      transition: .25s ease;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle:hover,
+    .menu-toggle:hover {
+      transform: translateY(-2px);
+    }
+
+    .theme-toggle svg {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      transition: .3s ease;
+    }
+
+    .icon-sun {
+      opacity: 0;
+      transform: scale(.6) rotate(-45deg);
+    }
+
+    .icon-moon {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+
+    html[data-theme="dark"] .icon-sun {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+
+    html[data-theme="dark"] .icon-moon {
+      opacity: 0;
+      transform: scale(.6) rotate(45deg);
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    .hero {
+      position: relative;
+      padding: 5.5rem 0 4.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .55rem .95rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface) 84%, transparent);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      color: var(--muted);
+      font-size: .95rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .eyebrow .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--success) 20%, transparent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: .8; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 6vw, 5.4rem);
+      line-height: .95;
+      letter-spacing: -.06em;
+      margin-bottom: 1rem;
+      max-width: 12ch;
+    }
+
+    .gradient-text {
+      background: linear-gradient(120deg, var(--primary), var(--primary-2), var(--accent), var(--primary));
+      background-size: 220% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientFlow 7s linear infinite;
+    }
+
+    @keyframes gradientFlow {
+      to { background-position: 220% center; }
+    }
+
+    .hero p.lead {
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .typing-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .35rem;
+      min-height: 2.2rem;
+      font-size: clamp(1.05rem, 2vw, 1.35rem);
+      font-weight: 600;
+      margin-bottom: 1.7rem;
+    }
+
+    .typing-prefix {
+      color: var(--muted);
+    }
+
+    .typewriter {
+      color: var(--text);
+    }
+
+    .caret {
+      width: 2px;
+      height: 1.15em;
+      background: var(--primary);
+      display: inline-block;
+      animation: blink 1s step-end infinite;
+      border-radius: 999px;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .9rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .65rem;
+      padding: .95rem 1.2rem;
+      border-radius: 16px;
+      font-weight: 700;
+      transition: .25s ease;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    }
+
+    .btn-secondary {
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      box-shadow: inset 0 0 0 1px var(--line), var(--shadow-soft);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .hero-meta i {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      display: inline-block;
+    }
+
+    .hero-card {
+      position: relative;
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 1.1rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: floatCard 7s ease-in-out infinite;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -30% auto auto -30%;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, color-mix(in srgb, var(--primary) 26%, transparent), transparent 65%);
+      pointer-events: none;
+    }
+
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .window {
+      border-radius: 22px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+      border: 1px solid var(--line);
+    }
+
+    .window-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .85rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: .4rem;
+    }
+
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #cbd5e1;
+    }
+
+    .window-dots span:nth-child(1) { background: #fb7185; }
+    .window-dots span:nth-child(2) { background: #fbbf24; }
+    .window-dots span:nth-child(3) { background: #34d399; }
+
+    .window-label {
+      color: var(--muted);
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    .code {
+      padding: 1.2rem 1rem 1rem;
+      font-size: .95rem;
+      overflow: auto;
+    }
+
+    .code pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: pre-wrap;
+      color: var(--text);
+    }
+
+    .code .k { color: var(--primary-2); }
+    .code .s { color: var(--accent); }
+    .code .n { color: var(--primary); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.4rem;
+      line-height: 1;
+      margin-bottom: .35rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .section {
+      padding: 2rem 0 4.5rem;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1.7rem;
+    }
+
+    .section-kicker {
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .82rem;
+      margin-bottom: .45rem;
+    }
+
+    .section h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -.05em;
+      margin-bottom: .5rem;
+    }
+
+    .section-head p {
+      max-width: 56ch;
+      color: var(--muted);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr .95fr;
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card.pad {
+      padding: 1.4rem;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: .85rem;
+      margin-top: 1.2rem;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: .9rem;
+      align-items: flex-start;
+      padding: 1rem;
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--surface-2) 84%, transparent);
+      border: 1px solid var(--line);
+    }
+
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 22%, transparent), color-mix(in srgb, var(--primary-2) 22%, transparent));
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .feature-item h3 {
+      font-size: 1rem;
+      margin-bottom: .2rem;
+    }
+
+    .feature-item p {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .mini-panel {
+      display: grid;
+      gap: .9rem;
+    }
+
+    .mini-item {
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--surface-2) 84%, transparent);
+      border: 1px solid var(--line);
+    }
+
+    .mini-item strong {
+      display: block;
+      margin-bottom: .25rem;
+    }
+
+    .mini-item span {
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 1.2rem;
+    }
+
+    .skill-groups {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .skill-group {
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .skill-group h3 {
+      margin-bottom: .95rem;
+      font-size: 1.05rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+
+    .tag {
+      padding: .7rem .9rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 88%, transparent);
+      border: 1px solid var(--line);
+      font-size: .92rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .bars {
+      display: grid;
+      gap: 1rem;
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .bar-row {
+      display: grid;
+      gap: .5rem;
+    }
+
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      font-weight: 600;
+    }
+
+    .bar-head span:last-child {
+      color: var(--muted);
+    }
+
+    .bar {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 90%, transparent);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 1.2s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .reveal.visible .bar > span {
+      transform: scaleX(1);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      perspective: 1200px;
+    }
+
+    .project-card {
+      border-radius: 26px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      box-shadow: var(--shadow-soft);
+      transition: transform .25s ease, box-shadow .25s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .project-card:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .project-media {
+      padding: 1rem;
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .media-1 {
+      background: linear-gradient(135deg, rgba(79,70,229,.18), rgba(6,182,212,.18));
+    }
+
+    .media-2 {
+      background: linear-gradient(135deg, rgba(236,72,153,.16), rgba(79,70,229,.16));
+    }
+
+    .media-3 {
+      background: linear-gradient(135deg, rgba(6,182,212,.16), rgba(16,185,129,.16));
+    }
+
+    .browser-mock {
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .browser-top {
+      height: 38px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      padding: 0 .8rem;
+    }
+
+    .browser-top span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #cbd5e1;
+    }
+
+    .browser-body {
+      padding: 1rem;
+      display: grid;
+      gap: .75rem;
+    }
+
+    .mock-line,
+    .mock-block {
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface-2) 90%, transparent);
+      border: 1px solid var(--line);
+    }
+
+    .mock-line {
+      height: 14px;
+      width: 100%;
+    }
+
+    .mock-line.short {
+      width: 48%;
+    }
+
+    .mock-line.mid {
+      width: 72%;
+    }
+
+    .mock-block {
+      height: 94px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 20%, transparent), color-mix(in srgb, var(--primary-2) 16%, transparent));
+    }
+
+    .project-content {
+      padding: 1.25rem;
+    }
+
+    .project-content h3 {
+      font-size: 1.15rem;
+      margin-bottom: .45rem;
+    }
+
+    .project-content p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: .96rem;
+    }
+
+    .project-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .8rem;
+      margin-top: .9rem;
+    }
+
+    .project-links {
+      display: flex;
+      gap: .55rem;
+      flex-wrap: wrap;
+    }
+
+    .link-chip {
+      padding: .68rem .9rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 90%, transparent);
+      border: 1px solid var(--line);
+      font-weight: 600;
+      font-size: .9rem;
+      transition: .25s ease;
+    }
+
+    .link-chip:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--primary) 30%, var(--line));
+    }
+
+    .contact-card {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 1.2rem;
+      padding: 1.3rem;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 92%, transparent), color-mix(in srgb, var(--surface-2) 96%, transparent));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .contact-copy p {
+      color: var(--muted);
+      margin: .85rem 0 1.15rem;
+      max-width: 54ch;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .85rem;
+    }
+
+    .contact-side {
+      display: grid;
+      gap: .85rem;
+    }
+
+    .contact-item {
+      padding: 1rem 1.05rem;
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      border: 1px solid var(--line);
+    }
+
+    .contact-item span {
+      display: block;
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: .2rem;
+    }
+
+    .contact-item strong {
+      font-size: 1rem;
+    }
+
+    footer {
+      padding: 1rem 0 2.5rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .about-grid,
+      .skills-grid,
+      .contact-card,
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 4rem;
+      }
+
+      .hero h1 {
+        max-width: 11ch;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .menu-toggle {
+        display: grid;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + .8rem);
+        right: 1rem;
+        width: min(300px, calc(100vw - 2rem));
+        background: color-mix(in srgb, var(--surface) 90%, transparent);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: .7rem;
+        box-shadow: var(--shadow);
+        flex-direction: column;
+        align-items: stretch;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: .25s ease;
+      }
+
+      .nav-links.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .nav-links a {
+        padding: .95rem 1rem;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding: 3.4rem 0 3.4rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.35rem, 13vw, 3.7rem);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-meta {
+        flex-direction: column;
+        gap: .6rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .hero-cta {
+        display: grid;
+      }
+
+      .contact-links {
+        display: grid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#accueil" class="logo" aria-label="Retour à l'accueil">
+        <span class="logo-mark">T</span>
+        <span>T/DEV</span>
+      </a>
+
+      <div class="header-actions">
+        <nav class="nav-links" id="navLinks">
+          <a href="#accueil" class="active">Accueil</a>
+          <a href="#apropos">À propos</a>
+          <a href="#competences">Compétences</a>
+          <a href="#projets">Projets</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <button class="theme-toggle" id="themeToggle" aria-label="Activer le mode sombre">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"></path>
+          </svg>
+        </button>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <div class="container hero-grid">
+        <div class="reveal visible">
+          <div class="eyebrow">
+            <span class="dot"></span>
+            Disponible pour projets freelance
+          </div>
+
+          <h1>
+            Développeur web <span class="gradient-text">clair, moderne</span> et efficace.
+          </h1>
+
+          <p class="lead">
+            Je conçois des interfaces élégantes, rapides et responsives qui mettent votre projet en valeur et offrent une excellente expérience utilisateur.
+          </p>
+
+          <div class="typing-line">
+            <span class="typing-prefix">Je crée des</span>
+            <span class="typewriter" id="typewriter"></span>
+            <span class="caret" aria-hidden="true"></span>
+          </div>
+
+          <div class="hero-cta">
+            <a href="#projets" class="btn btn-primary">Voir mes projets</a>
+            <a href="#contact" class="btn btn-secondary">Me contacter</a>
+          </div>
+
+          <div class="hero-meta">
+            <span><i></i> Design propre et lisible</span>
+            <span><i></i> Animation subtile et professionnelle</span>
+            <span><i></i> Mode clair / sombre intégré</span>
+          </div>
+        </div>
+
+        <div class="hero-card reveal">
+          <div class="window">
+            <div class="window-top">
+              <div class="window-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="window-label">portfolio.js</div>
+            </div>
+            <div class="code">
+<pre><span class="k">const</span> projet = {
+  <span class="n">design</span>: <span class="s">"clair & premium"</span>,
+  <span class="n">animations</span>: <span class="s">"fluides"</span>,
+  <span class="n">responsive</span>: <span class="s">"mobile first"</span>,
+  <span class="n">theme</span>: <span class="s">"light / dark"</span>
+};</pre>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat">
+              <strong>100%</strong>
+              <span>Responsive</span>
+            </div>
+            <div class="stat">
+              <strong>SEO</strong>
+              <span>Structure propre</span>
+            </div>
+            <div class="stat">
+              <strong>UI</strong>
+              <span>Design soigné</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="apropos">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">À propos</div>
+            <h2>Un portfolio pensé pour convaincre rapidement.</h2>
+          </div>
+          <p>
+            J’aide les marques, indépendants et startups à transformer leurs idées en sites web performants, élégants et simples à utiliser.
+          </p>
+        </div>
+
+        <div class="about-grid">
+          <div class="card pad about-text reveal">
+            <p>
+              Mon approche combine design clair, structure efficace et développement propre. Je privilégie les interfaces lisibles, les micro-interactions utiles et une expérience fluide sur tous les écrans.
+            </p>
+            <p>
+              Que ce soit pour un site vitrine, une landing page, un dashboard ou un portfolio, je construis des pages qui allient performance, esthétique et impact.
+            </p>
+
+            <div class="feature-list">
+              <div class="feature-item">
+                <div class="feature-icon">01</div>
+                <div>
+                  <h3>Design orienté conversion</h3>
+                  <p>Une hiérarchie visuelle claire pour guider vos visiteurs.</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">02</div>
+                <div>
+                  <h3>Développement moderne</h3>
+                  <p>Code propre, animations fluides et excellente réactivité.</p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">03</div>
+                <div>
+                  <h3>Expérience cohérente</h3>
+                  <p>Version mobile soignée et mode clair/sombre parfaitement intégré.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-panel reveal">
+            <div class="card pad">
+              <div class="mini-item">
+                <strong>Ce que je privilégie</strong>
+                <span>Lisibilité, rapidité, fluidité et détails visuels élégants.</span>
+              </div>
+              <div class="mini-item">
+                <strong>Stack favorite</strong>
+                <span>HTML, CSS, JavaScript, React, Next.js, Tailwind, Node.js.</span>
+              </div>
+              <div class="mini-item">
+                <strong>Objectif</strong>
+                <span>Créer des interfaces modernes qui donnent confiance dès les premières secondes.</span>
+              </div>
+            </div>
+
+            <div class="card pad">
+              <div class="mini-item">
+                <strong>Disponible pour</strong>
+                <span>Sites vitrines, refontes UI, landing pages, dashboards et portfolios.</span>
+              </div>
+              <div class="mini-item">
+                <strong>Collaboration</strong>
+                <span>Freelance, mission courte, long terme ou renfort produit.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="competences">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">Compétences</div>
+            <h2>Des bases solides et une exécution propre.</h2>
+          </div>
+          <p>
+            Une combinaison de design front-end, développement moderne et optimisation pour livrer des projets rapides et agréables à utiliser.
+          </p>
+        </div>
+
+        <div class="skills-grid">
+          <div class="skill-groups">
+            <div class="skill-group reveal">
+              <h3>Front-end</h3>
+              <div class="tags">
+                <span class="tag">HTML5</span>
+                <span class="tag">CSS3 / SCSS</span>
+                <span class="tag">JavaScript</span>
+                <span class="tag">React</span>
+                <span class="tag">Next.js</span>
+                <span class="tag">Tailwind CSS</span>
+              </div>
+            </div>
+
+            <div class="skill-group reveal">
+              <h3>Back-end & intégration</h3>
+              <div class="tags">
+                <span class="tag">Node.js</span>
+                <span class="tag">Express</span>
+                <span class="tag">API REST</span>
+                <span class="tag">Firebase</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">CMS Headless</span>
+              </div>
+            </div>
+
+            <div class="skill-group reveal">
+              <h3>Outils</h3>
+              <div class="tags">
+                <span class="tag">Git / GitHub</span>
+                <span class="tag">Figma</span>
+                <span class="tag">Vercel</span>
+                <span class="tag">Lighthouse</span>
+                <span class="tag">Responsive Design</span>
+                <span class="tag">SEO technique</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bars reveal">
+            <div class="bar-row">
+              <div class="bar-head">
+                <span>UI / Design d’interface</span>
+                <span>92%</span>
+              </div>
+              <div class="bar"><span style="width:92%"></span></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-head">
+                <span>Intégration responsive</span>
+                <span>98%</span>
+              </div>
+              <div class="bar"><span style="width:98%"></span></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-head">
+                <span>Performance front-end</span>
+                <span>94%</span>
+              </div>
+              <div class="bar"><span style="width:94%"></span></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-head">
+                <span>Animations & micro-interactions</span>
+                <span>90%</span>
+              </div>
+              <div class="bar"><span style="width:90%"></span></div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-head">
+                <span>Accessibilité</span>
+                <span>88%</span>
+              </div>
+              <div class="bar"><span style="width:88%"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <section class="section" id="projets">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-kicker">Projets</div>
+        <h2>Quelques réalisations récentes.</h2>
+      </div>
+      <p>Des interfaces conçues pour être belles, rapides et faciles à parcourir.</p>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- Card 1 -->
+      <a href="https://tresor004.github.io/BTEC/index.html"
+         target="_blank"
+         class="project-card reveal"
+         style="text-decoration:none; color:inherit; display:flex; flex-direction:column;">
+        <div class="project-media media-1" style="overflow:hidden;">
+          <img
+            src="assets/image1.png"
+            alt="Dashboard analytique"
+            style="width:100%; height:100%; object-fit:cover; object-position:top; display:block; border-radius:inherit;"
+          />
+        </div>
+        <div class="project-content">
+          <div class="tags" style="margin-bottom:.9rem">
+            <span class="tag">SaaS</span>
+            <span class="tag">Dashboard</span>
+            <span class="tag">React</span>
+          </div>
+          <h3>Dashboard analytique</h3>
+          <p>Interface claire pour visualiser des données, suivre des KPI et améliorer la prise de décision.</p>
+          <div class="project-footer">
+            <div class="project-links">
+              <span class="link-chip">Voir ce type de projet</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="https://tresor004.github.io/BTEC/etickets.html"
+         target="_blank"
+         class="project-card reveal"
+         style="text-decoration:none; color:inherit; display:flex; flex-direction:column;">
+        <div class="project-media media-2" style="overflow:hidden;">
+          <img
+            src="assets/image 2.png"
+            alt="Boutique en ligne élégante"
+            style="width:100%; height:100%; object-fit:cover; object-position:top; display:block; border-radius:inherit;"
+          />
+        </div>
+        <div class="project-content">
+          <div class="tags" style="margin-bottom:.9rem">
+            <span class="tag">E-commerce</span>
+            <span class="tag">UI / UX</span>
+            <span class="tag">Responsive</span>
+          </div>
+          <h3>Boutique en ligne efficace</h3>
+          <p>Une expérience d'achat fluide avec navigation intuitive, design simple et forte lisibilité mobile.</p>
+          <div class="project-footer">
+            <div class="project-links">
+              <span class="link-chip">Voir plus de détails </span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="https://tresor004.github.io/BTEC/Admin/index.html"
+         target="_blank"
+         class="project-card reveal"
+         style="text-decoration:none; color:inherit; display:flex; flex-direction:column;">
+        <div class="project-media media-3" style="overflow:hidden;">
+          <img
+            src="assets/image3.png"
+            alt="Site vitrine personnel"
+            style="width:100%; height:100%; object-fit:cover; object-position:top; display:block; border-radius:inherit;"
+          />
+        </div>
+        <div class="project-content">
+          <div class="tags" style="margin-bottom:.9rem">
+            <span class="tag">Vitrine</span>
+            <span class="tag">Animation</span>
+            <span class="tag">Dark mode</span>
+          </div>
+          <h3>Site vitrine professionnel</h3>
+          <p>Un site de présentation moderne avec animation fluide, des transitions douces et mode clair/sombre harmonieux.</p>
+          <div class="project-footer">
+            <div class="project-links">
+              <span class="link-chip">Voir le projet</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="contact-card reveal">
+          <div class="contact-copy">
+            <div class="section-kicker">Contact</div>
+            <h2>Vous avez un projet web ?</h2>
+            <p>
+              Je peux vous aider à créer une présence en ligne moderne, professionnelle et agréable à utiliser. Discutons de votre besoin et donnons vie à votre idée.
+            </p>
+            <div class="contact-links">
+              <a href="mailto:contact@portfolio.dev" class="btn btn-primary">Envoyer un email</a>
+              <a href="#accueil" class="btn btn-secondary">Revenir en haut</a>
+            </div>
+          </div>
+
+          <div class="contact-side">
+            <div class="contact-item">
+              <span>Email</span>
+              <strong>contact@portfolio.dev</strong>
+            </div>
+            <div class="contact-item">
+              <span>Disponibilité</span>
+              <strong>Freelance / mission web</strong>
+            </div>
+            <div class="contact-item">
+              <span>Spécialités</span>
+              <strong>UI claire, responsive, animations, dark mode</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Portfolio Développeur Web
+  </footer>
+
+  <script>
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+    const typewriter = document.getElementById('typewriter');
+    const year = document.getElementById('year');
+
+    year.textContent = new Date().getFullYear();
+
+    function updateThemeLabel() {
+      const current = html.getAttribute('data-theme');
+      themeToggle.setAttribute(
+        'aria-label',
+        current === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre'
+      );
+    }
+
+    updateThemeLabel();
+
+    themeToggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeLabel();
+    });
+
+    menuToggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    navAnchors.forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    const phrases = [
+      "interfaces rapides et élégantes.",
+      "sites vitrines qui convertissent.",
+      "expériences web claires et modernes."
+    ];
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    function runTypewriter() {
+      const current = phrases[phraseIndex];
+      typewriter.textContent = current.slice(0, charIndex);
+
+      if (!deleting && charIndex < current.length) {
+        charIndex++;
+        setTimeout(runTypewriter, 80);
+      } else if (!deleting && charIndex === current.length) {
+        deleting = true;
+        setTimeout(runTypewriter, 1400);
+      } else if (deleting && charIndex > 0) {
+        charIndex--;
+        setTimeout(runTypewriter, 45);
+      } else {
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        setTimeout(runTypewriter, 260);
+      }
+    }
+    runTypewriter();
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.16 });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    const sections = document.querySelectorAll('main section[id]');
+    function updateActiveLink() {
+      let currentId = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 120;
+        if (scrollY >= top) currentId = section.id;
+      });
+
+      navAnchors.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+      });
+    }
+
+    updateActiveLink();
+    window.addEventListener('scroll', updateActiveLink);
+
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        if (window.innerWidth < 981) return;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const rotateY = ((x / rect.width) - 0.5) * 8;
+        const rotateX = (0.5 - (y / rect.height)) * 8;
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
+    });
+  </script>
+</body>
+</html>
